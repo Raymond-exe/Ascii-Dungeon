@@ -39,6 +39,7 @@ How players can earn XP:
 | D | Bow | Weapon |
 | ~ | Key | Pickup |
 | h | Health | Pickup |
+| © | Coin | Pickup
 | O | Orc | Enemy |
 | G | Goblin | Enemy |
 | B | Behemoth | Enemy
