@@ -4,6 +4,7 @@ A polished update of the original *Ascii Roguelike* submitted by our team during
 
 Original submission: [Ascii Roguelike](https://github.com/irvinehacks2019/ascii_roguelike)
 
+--------------------
 
 What this update adds:
 - Player names
@@ -16,6 +17,8 @@ How players can earn XP:
 - Defeating monsters
 - Item pickups!
 - Finishing levels (within a set amount of moves)
+
+--------------------
 
 Future updates should include:
 - Lots of bug fixes
