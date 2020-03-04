@@ -22,6 +22,7 @@ How players can earn XP:
 
 Future updates should include:
 - Lots of bug fixes
+- Better pathfinding for monsters
 - A local scoreboard
 - More weapons & monsters
 - A bow that actually shoots
