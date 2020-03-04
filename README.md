@@ -20,7 +20,7 @@ How players can earn XP:
 
 --------------------
 
-#Future Updates
+# Future Updates
 
 Future updates should include:
 - Lots of bug fixes
