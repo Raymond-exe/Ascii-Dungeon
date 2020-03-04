@@ -50,8 +50,10 @@ How players can earn XP:
 Future updates should include:
 - Lots of bug fixes
 - Better pathfinding for monsters
+- Bossfights
 - Each level should become more complex than the last
 - Keys for higher levels!
+- Shops
 - A local scoreboard
 - More weapons & monsters
 - A bow that actually shoots (and looks like "}")
