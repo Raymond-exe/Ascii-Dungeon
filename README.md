@@ -20,6 +20,31 @@ How players can earn XP:
 
 --------------------
 
+**Controls**
+| Key | Action |
+|-|-|
+| W | Move up |
+| A | Move left |
+| S | Move down |
+| D | Move right |
+| SPACEBAR | Attack |
+| ENTER | Confirm action |
+
+
+**Legend**
+| Symbol | Value | Type |
+|-|-|-|
+| @ | Player | |
+| T | Sword | Weapon |
+| D | Bow | Weapon |
+| ~ | Key | Pickup |
+| h | Health | Pickup |
+| O | Orc | Enemy |
+| G | Goblin | Enemy |
+| B | Behemoth | Enemy
+
+--------------------
+
 # Future Updates
 
 Future updates should include:
