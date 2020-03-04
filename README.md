@@ -51,6 +51,7 @@ Future updates should include:
 - Lots of bug fixes
 - Better pathfinding for monsters
 - Each level should become more complex than the last
+- Keys for higher levels!
 - A local scoreboard
 - More weapons & monsters
-- A bow that actually shoots
+- A bow that actually shoots (and looks like "}")
