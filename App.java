@@ -1,11 +1,26 @@
     import java.util.Scanner;
     import java.lang.Math;
+    import java.io.PrintStream;
 
 
     public class App {
 
+        public static char BOWCHAR = '}';
+        public static char SWORDCHAR = 'T';
+        public static char PLAYERCHAR = '@';
+        //public static char COINCHAR = '©';
+        public static PrintStream sysOut;
+
         public static void main (String[] args) {
             Scanner scanner = new Scanner(System.in);
+            try {
+                sysOut = new PrintStream(System.out, true, "UTF-8");
+            } catch (Exception e) {
+                System.out.println("Fatal error, unable to print");
+                scanner.close();
+                return;
+            }
+
             int level = 0;
             int playerXp = 0;
             
@@ -17,11 +32,20 @@
             
             System.out.print("Enter your name to start: ");
             Player p = new Player(5, scanner.nextLine(), 0, 0);            
-            System.out.println("Welcome " + p.getName() + "!");
+            sysOut.println("Welcome " + p.getName() + "!");
 
             //RUNS EVERY LEVEL RESET
             while(true) {
-                MapGenerator mg = new MapGenerator(20, 40); //randomly generates a new level
+                int spaceFactor;
+                switch (level) {
+                    case 1: case 2: case 3:
+                        spaceFactor = 5;
+                    case 4: case 5: case 6:
+                        spaceFactor = 4;
+                    default:
+                        spaceFactor = 3;
+                }
+                MapGenerator mg = new MapGenerator(20, 40, spaceFactor); //randomly generates a new level
                 char[][] screen = mg.map; //assigns to "screen" for local reference
 
                 //SETS PLAYER POSITION
@@ -31,7 +55,7 @@
 
                 int levelFinishXp = (int)(50 * Math.cbrt(level));
 
-                screen[p.yPos][p.xPos] = '@';
+                screen[p.yPos][p.xPos] = PLAYERCHAR;
                 screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = 'h';
 
 
@@ -39,10 +63,10 @@
                 int weaponGen = (int)(Math.random() *4) +1;
                 switch (weaponGen) {
                 case 1:
-                    screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = 'D';
+                    screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = BOWCHAR;
                     break;
                 case 2:
-                    screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = 'T';
+                    screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = SWORDCHAR;
                     break;
                 case 3:
                     break;
@@ -81,7 +105,7 @@
                     System.out.print("\n");
                 }      
                 
-                System.out.println("Health: " + p.getHealth() + "/" + p.getHealthCap() + "\tWeapon: " + p.getWeapon() + "\tOverall XP: " + playerXp);
+                sysOut.println("Health: " + p.getHealth() + "/" + p.getHealthCap() + "\tWeapon: " + p.getWeapon() + "\tOverall XP: " + playerXp);
 
                 
                 //RUNS EVERY TURN
@@ -106,7 +130,7 @@
 
                         if (enemyIsNearPlayer) {
                             p.decreaseHealth(en.attack);
-                            System.out.println(en + " delt " + en.attack + " damage to " + p.getName() + "!");
+                            sysOut.println(en + " delt " + en.attack + " damage to " + p.getName() + "!");
                         }
                         else if (p.xPos > en.xPos && screen[en.yPos][en.xPos + 1] != mg.getWall() && !enemies.isEnemy(screen, en.xPos + 1, en.yPos)) {
                             screen[en.yPos][en.xPos] = mg.getSpace();
@@ -130,7 +154,7 @@
                         }              
                     }
                     
-                    screen[p.yPos][p.xPos] = '@'; //updates player's position on the map
+                    screen[p.yPos][p.xPos] = PLAYERCHAR; //updates player's position on the map
 
                     if (input.equals("w") || input.equals("a") || input.equals("s") || input.equals("d") || input.equals(" ")) {
                         int lastX = p.xPos;
@@ -159,18 +183,18 @@
                                 p.increaseHealth();
                             }
                             playerXp += 15;
-                            System.out.println("Picked up a health potion & gained 15 XP!");
+                            sysOut.println("Picked up a health potion & gained 15 XP!");
                         }
                         
-                        if(screen[p.yPos][p.xPos] == 'D') {
+                        if(screen[p.yPos][p.xPos] == BOWCHAR) {
                             p.setWeapon(new Weapon("Bow", 2, 1, 5));
                             playerXp += 25;
-                            System.out.println("Picked up a bow & gained 25 XP!");
+                            sysOut.println("Picked up a bow & gained 25 XP!");
                         }
-                        if(screen[p.yPos][p.xPos] == 'T') {
+                        if(screen[p.yPos][p.xPos] == SWORDCHAR) {
                             p.setWeapon(new Weapon("Sword", 1, 2, 10));
                             playerXp += 25;
-                            System.out.println("Picked up a sword & gained 25 XP!");
+                            sysOut.println("Picked up a sword & gained 25 XP!");
                         }
                         
 
@@ -180,12 +204,12 @@
                                 enemy.character = ' ';
                                 screen[enemy.yPos][enemy.xPos] = enemy.character;
                                 playerXp += 50;
-                                System.out.println("Defeated a monster & gained 50 XP!");
+                                sysOut.println("Defeated a monster & gained 50 XP!");
                             }
                         }
 
                         if (screen[p.yPos][p.xPos] != mg.getWall() && screen[p.yPos][p.xPos] != 'O' && screen[p.yPos][p.xPos] != 'G' && screen[p.yPos][p.xPos] != 'B') {
-                            screen[p.yPos][p.xPos] = '@';
+                            screen[p.yPos][p.xPos] = PLAYERCHAR;
                             if (dir != -1) {
                                 screen[lastY][lastX] = ' ';
                             }
@@ -207,21 +231,23 @@
                             }
                             System.out.print("\n");
                         }
-                        System.out.println("Health: " + p.getHealth() + "/" + p.getHealthCap() + "\tWeapon: " + p.getWeapon() + "\tOverall XP: " + playerXp);
+                        sysOut.println("Health: " + p.getHealth() + "/" + p.getHealthCap() + "\tWeapon: " + p.getWeapon() + "\tOverall XP: " + playerXp);
                         levelFinishXp--;
                 }
             }
             if (levelFinishXp > 0) {
-                System.out.println("Next level! Gained " + levelFinishXp + "XP!");
+                sysOut.println("Next level! Gained " + levelFinishXp + "XP!");
                 playerXp += levelFinishXp;
             } else {
-                System.out.println("Next level!");
+                sysOut.println("Next level!");
             }
             if(p.getHealth() < 1) {
               AsciiText.printGameOver();
               break;
             }
             }
+
+            scanner.close();
 
         }
     }

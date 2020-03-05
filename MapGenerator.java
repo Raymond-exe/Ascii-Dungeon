@@ -14,11 +14,11 @@ public class MapGenerator {
     public char getSpace() { return space; }
     public char[][] getMap() { return map; }
 
-    public MapGenerator(int y, int x) {
+    public MapGenerator(int y, int x, int spaceFactor) {
         map = new char[y][x];
         mapChecker = new boolean[y][x];
         walls = new int[map.length / 3][ map[0].length / 3];
-        fillMap();
+        fillMap(spaceFactor);
         for (int y0 = 0; y0 < map.length; y0++) {
             for (int x0 = 0; x0 < map.length; x0++) {
                 //navigator[y0][x0] = (map[y0][x0] == '#' ? -1 : 0);
@@ -49,13 +49,13 @@ public class MapGenerator {
         }
         return output;
     }
-    private void fillMap() {
+    private void fillMap(int spaceFactor) {
         boolean isXEdge = false;
         boolean isYEdge = false;
 
         for (int y = 0; y < walls.length; y++) {
             for (int x = 0; x < walls[y].length; x++) {
-                walls[y][x] = (int)(Math.random() * 4);
+                walls[y][x] = (int)(Math.random() * spaceFactor);
                 if (walls[y][x] > 5)
                     walls[y][x] = 5;
             }
@@ -138,7 +138,7 @@ public class MapGenerator {
 
 
     public static void main(String[] args) {
-        MapGenerator mg = new MapGenerator(Integer.parseInt(args[0]), Integer.parseInt((args[1])));
+        MapGenerator mg = new MapGenerator(Integer.parseInt(args[0]), Integer.parseInt((args[1])), Integer.parseInt(args[2]));
         System.out.println(mg);
     }
 
