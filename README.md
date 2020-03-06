@@ -12,7 +12,7 @@ What this updated version adds:
 - Better action announcements
 - Flushed-out tutorial screen
 - Weapon durability
-- A bow that looks like "}")
+- A bow that looks like "`}`")
 - Player can now earn XP
 
 How players can earn XP:
@@ -38,7 +38,7 @@ How players can earn XP:
 |-|-|-|
 | @ | Player | |
 | T | Sword | Weapon |
-| D | Bow | Weapon |
+| `}` | Bow | Weapon |
 | ~ | Key | Pickup |
 | h | Health | Pickup |
 | C | Coin | Pickup
