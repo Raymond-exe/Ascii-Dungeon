@@ -55,6 +55,7 @@ public class Enemy
 
     if (isDead) {
       System.out.println(this + " has perished!");
+      App.announcements++;
       attack = 0;
       character = ' ';
     }

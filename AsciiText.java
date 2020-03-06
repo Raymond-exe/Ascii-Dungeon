@@ -1,6 +1,22 @@
 public class AsciiText {
         
-        public static void printIntro() {
+        public static void printMenu() {
+          System.out.println("MAIN MENU\n");
+          System.out.println("[P] - Play!");
+          System.out.println("[H] - Help/tutorial");
+          System.out.println("[S] - Scoreboard/High-Scores");
+          System.out.println("[C] - Credits");
+          System.out.println("[Q] - Quit game\n");
+        }
+
+        public static void printLines(int num) {
+          for (int i = 0; i < num; i++)
+            System.out.print("\n");
+        }
+
+        public static void printTutorial() {
+            printLines(3);
+            System.out.println("\n");
             System.out.println("|-----------CONTROLS------------|");
             System.out.println("|        W - move up            |");
             System.out.println("|        A - move left          |");
@@ -8,13 +24,15 @@ public class AsciiText {
             System.out.println("|        D - move right         |");
             System.out.println("|        Space - attack         |");
             System.out.println("| Press ENTER to confirm action |\n");
+            printLines(3);
             System.out.println("|-------LEGEND-------|");
-            System.out.println("| D - bow            |");
+            System.out.println("| } - bow            |");
             System.out.println("| T - sword          |");
             System.out.println("| h - health potion  |");
             System.out.println("| O - orc            |");
             System.out.println("| G - goblin         |");
-            System.out.println("| B - behemoth       |\n");
+            System.out.println("| B - behemoth       |");
+            printLines(7);
         }
         
         public static void printTitleScreen() {
@@ -35,7 +53,7 @@ public class AsciiText {
             end += "| |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ \n";
             end += "| | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__| \n";
             end += "| |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   \n";
-            end += " \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   ";
+            end += " \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   \n\n";
             System.out.println(end);
         }
           

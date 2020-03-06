@@ -8,9 +8,11 @@ Our original submission: [Ascii Roguelike](https://github.com/irvinehacks2019/as
 
 What this updated version adds:
 - Player names
+- A local scoreboard
 - Better action announcements
 - Flushed-out tutorial screen
 - Weapon durability
+- A bow that looks like "}")
 - Player can now earn XP
 
 How players can earn XP:
@@ -39,7 +41,7 @@ How players can earn XP:
 | D | Bow | Weapon |
 | ~ | Key | Pickup |
 | h | Health | Pickup |
-| © | Coin | Pickup
+| C | Coin | Pickup
 | O | Orc | Enemy |
 | G | Goblin | Enemy |
 | B | Behemoth | Enemy
@@ -55,6 +57,5 @@ Future updates should include:
 - Each level should become more complex than the last
 - Keys for higher levels!
 - Shops
-- A local scoreboard
 - More weapons & monsters
-- A bow that actually shoots (and looks like "}")
+- A bow that actually shoots

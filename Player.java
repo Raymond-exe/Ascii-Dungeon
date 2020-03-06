@@ -74,6 +74,7 @@ public class Player {
                         if (screen[i][j] == 'O' || screen[i][j] == 'G' || screen[i][j] == 'B') {                     
                             Enemy enemy = enemies.getEnemyByPosition(j, i);
                             System.out.println(name + " delt " + playerWeapon.getDamage() + " to " + enemy);
+                            App.announcements+=3;
                             enemy.takeDamage(playerWeapon.getDamage());
                             if (enemy.getHP() == 0) {
                                 //add 35 xp
@@ -82,11 +83,13 @@ public class Player {
                         }
                     } catch (Exception e) {
                         System.out.println("Error - null attack");
+                        App.announcements++;
                 }
             }
         }
         if (!attacked)
             System.out.println("You attacked thin air!");
+            App.announcements+=3;
         
             playerWeapon.decreaseDurability();
     }
