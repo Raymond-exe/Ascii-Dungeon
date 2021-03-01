@@ -1,3 +1,5 @@
+package org.irvinehacks.score;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.lang.StringBuffer;

@@ -1,14 +1,25 @@
+package org.irvinehacks;
+
 import java.util.Scanner;
 import java.lang.Math;
 
+import org.irvinehacks.enemy.Enemies;
+import org.irvinehacks.enemy.Enemy;
+import org.irvinehacks.map.MapGenerator;
+import org.irvinehacks.player.Player;
+import org.irvinehacks.player.Weapon;
+import org.irvinehacks.score.Scorekeeper;
 
 public class App {
 
-    private static char BOWCHAR = '}';
-    private static char SWORDCHAR = 'T';
-    private static char PLAYERCHAR = '@';
+    private static final char BOWCHAR = '}';
+    private static final char SWORDCHAR = 'T';
+    private static final char PLAYERCHAR = '@';
+    private static final char HEALTHCHAR = 'h';
     public static int announcements = 0;
     //public static char COINCHAR = '©';
+
+    public static final int HEALTH_POTION_VALUE = 3;
 
     public static void main(String[] args) {
 
@@ -121,7 +132,7 @@ public class App {
                         int levelFinishXp = (int)(50 * Math.cbrt(level));
 
                         screen[p.yPos][p.xPos] = PLAYERCHAR;
-                        screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = 'h';
+                        screen[(int)(Math.random() * 18) + 1][(int)(Math.random() * 38) + 1] = HEALTHCHAR;
 
 
                         //ADDING WEAPON PICKUPS TO LEVEL
@@ -148,16 +159,16 @@ public class App {
                             Enemy enemy;
                             switch (type) {
                                 case 1:
-                                    enemy = new Enemy('O', 1, 1, 2, xPs, yPs); // orc
+                                    enemy = new Enemy('O', 1, 1,1, 1, xPs, yPs); // orc
                                     break;
                                 case 2:
-                                    enemy = new Enemy('G', 1, 2, 1, xPs, yPs); // goblin
+                                    enemy = new Enemy('G', 1, 2, 1, 1, xPs, yPs); // goblin
                                     break;
                                 case 3:
-                                    enemy = new Enemy('B', 3, 1, 1, xPs, yPs); // behemoth
+                                    enemy = new Enemy('B', 3, 1, 1, 2, xPs, yPs); // behemoth
                                     break;
                                 default:
-                                    enemy = new Enemy(' ', 0, 0, 0, xPs, yPs); // null error
+                                    enemy = new Enemy(' ', 0, 0, 0, -1, xPs, yPs); // null error
                             }
                             screen[yPs][xPs] = enemy.character;
                             enemies.addEnemy(enemy);
@@ -232,7 +243,7 @@ public class App {
                                     dir = 3;
                                 } else if (input.equals("a")) {
                                     dir = 4;
-                                } else if (input.equals(" ")) {
+                                } else {
                                     dir = -1;
                                     p.attack(screen, enemies);
                                 }
@@ -241,26 +252,26 @@ public class App {
                                 if (screen[p.yPos][p.xPos] == '-' || (p.yPos == screen.length - 1) && screen[p.yPos][p.xPos] != '#')
                                     break;
 
-                                if (screen[p.yPos][p.xPos] == 'h') {
-                                    if (p.getHealth() < p.getHealthCap()) {
-                                        p.increaseHealth();
-                                    }
-                                    playerXp += 15;
-                                    System.out.println("Picked up a health potion & gained 15 XP!");
-                                    announcements+=3;
-                                }
-
-                                if (screen[p.yPos][p.xPos] == BOWCHAR) {
-                                    p.setWeapon(new Weapon("Bow", 2, 1, 5));
-                                    playerXp += 25;
-                                    System.out.println("Picked up a bow & gained 25 XP!");
-                                    announcements+=3;
-                                }
-                                if (screen[p.yPos][p.xPos] == SWORDCHAR) {
-                                    p.setWeapon(new Weapon("Sword", 1, 2, 10));
-                                    playerXp += 25;
-                                    System.out.println("Picked up a sword & gained 25 XP!");
-                                    announcements+=3;
+                                //ITEM PICKUPS
+                                switch (screen[p.yPos][p.xPos]) {
+                                    case HEALTHCHAR:
+                                        p.increaseHealth(HEALTH_POTION_VALUE);
+                                        playerXp += 15;
+                                        System.out.println("Picked up a health potion & gained 15 XP!");
+                                        announcements+=3;
+                                        break;
+                                    case BOWCHAR:
+                                        p.setWeapon(new Weapon("Bow", 2, 1, 5));
+                                        playerXp += 25;
+                                        System.out.println("Picked up a bow & gained 25 XP!");
+                                        announcements+=3;
+                                        break;
+                                    case SWORDCHAR:
+                                        p.setWeapon(new Weapon("Sword", 1, 2, 10));
+                                        playerXp += 25;
+                                        System.out.println("Picked up a sword & gained 25 XP!");
+                                        announcements+=3;
+                                        break;
                                 }
 
 
@@ -304,7 +315,10 @@ public class App {
                             }
                         }
                         if (levelFinishXp > 0 && p.getHealth() > 0) {
-                            System.out.println("Next level! Gained " + levelFinishXp + "XP!");
+                            if(enemies.isEmpty())
+                                levelFinishXp*=Math.max(2, level);
+
+                            System.out.println("Next level! Gained " + levelFinishXp + "XP!" + (enemies.isEmpty()? "(Multiplied for clearing all enemies!)" : ""));
                             playerXp += levelFinishXp;
                         } else if (p.getHealth() > 0) {
                             System.out.println("Next level!");

@@ -1,3 +1,9 @@
+package org.irvinehacks.player;
+
+import org.irvinehacks.App;
+import org.irvinehacks.enemy.Enemies;
+import org.irvinehacks.enemy.Enemy;
+
 public class Player {
 
     private int health;
@@ -6,6 +12,8 @@ public class Player {
     private Weapon playerWeapon;
     public int yPos;
     public int xPos;
+
+    public final int MAX_HEALTH = 5;
 
 
     public Player(int h, String n, int x, int y) {
@@ -25,9 +33,24 @@ public class Player {
     public Weapon getWeapon() { return playerWeapon; }
     public int getHealthCap() { return healthCap; }
 
-    public void decreaseHealth(int num) { health -= num;}
-    public int increaseHealth() { return ++health;}
-    
+    public int  decreaseHealth() {
+        return decreaseHealth(1);
+    }
+
+    public int decreaseHealth(int num) {
+        health -= num;
+        return health;
+    }
+
+    public int increaseHealth() {
+        return increaseHealth(1);
+    }
+
+    public int increaseHealth(int i) {
+        health = Math.min(MAX_HEALTH, health+i);
+        return health;
+    }
+
     public void setX(int x)
     {
      xPos = x; 

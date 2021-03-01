@@ -1,3 +1,5 @@
+package org.irvinehacks.player;
+
 public class Weapon {
     private String name;
     private int range;

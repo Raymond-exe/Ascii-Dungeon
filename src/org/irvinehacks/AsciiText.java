@@ -1,3 +1,5 @@
+package org.irvinehacks;
+
 public class AsciiText {
         
         public static void printMenu() {

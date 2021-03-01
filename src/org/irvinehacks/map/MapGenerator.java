@@ -1,3 +1,5 @@
+package org.irvinehacks.map;
+
 import java.lang.Math;
 
 public class MapGenerator {

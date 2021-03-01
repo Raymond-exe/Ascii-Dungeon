@@ -1,11 +1,18 @@
+package org.irvinehacks.enemy;
+
 import java.util.ArrayList;
 
 public class Enemies {
 
-    public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public ArrayList<Enemy> enemies = new ArrayList<>();
 
     public void addEnemy(Enemy enemy) {
         enemies.add(enemy);
+    }
+
+    public boolean isEmpty() {
+        clearDeadEnemies();
+        return enemies.isEmpty();
     }
 
     public Enemy getEnemyByPosition(int xPos, int yPos) {

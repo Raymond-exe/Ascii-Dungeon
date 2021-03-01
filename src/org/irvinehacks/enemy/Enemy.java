@@ -1,3 +1,7 @@
+package org.irvinehacks.enemy;
+
+import org.irvinehacks.App;
+
 public class Enemy
 {
   public int hp;
@@ -7,8 +11,10 @@ public class Enemy
   public int yPos;
   public int range;
   public char character;
+  public int turnsToMove;
+  private int moveCounter;
   
-  public Enemy(char c, int h, int atk, int r, int xP, int yP)
+  public Enemy(char c, int h, int atk, int r, int ttm, int xP, int yP)
   {
     hp = h;
     attack = atk;
@@ -18,6 +24,8 @@ public class Enemy
     yPos = yP;
     range = 1;
     character = c;
+    turnsToMove = ttm;
+    moveCounter = 0;
   }
   
   public String toString()
@@ -63,20 +71,26 @@ public class Enemy
   
   public void move(char c)
   {
-    if(c == 'w') {
-      yPos++;
-    }
-    
-    if(c == 's') {
-      yPos--; 
-    }
-    
-    if(c == 'a') {
-      xPos++;
-    }
-    
-    if(c == 'd') {
-      xPos--; 
+    moveCounter++;
+
+    if(moveCounter< turnsToMove)
+      return;
+
+    moveCounter=0;
+
+    switch(c) {
+      case 'w':
+        yPos++;
+        break;
+      case 's':
+        yPos--;
+        break;
+      case 'a':
+        xPos++;
+        break;
+      case 'd':
+        xPos--;
+        break;
     }
   }
 }
