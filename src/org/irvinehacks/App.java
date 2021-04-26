@@ -6,6 +6,7 @@ import java.lang.Math;
 import org.irvinehacks.enemy.Enemies;
 import org.irvinehacks.enemy.Enemy;
 import org.irvinehacks.map.MapGenerator;
+import org.irvinehacks.map.MazeSolver;
 import org.irvinehacks.player.Player;
 import org.irvinehacks.player.Weapon;
 import org.irvinehacks.score.Scorekeeper;
@@ -93,7 +94,6 @@ public class App {
                 case "p": //Play
 
                     //GAME CODE!!!
-                    //scanner = new Scanner(System.in);
 
                     int level = 0;
                     int playerXp = 0;
@@ -106,17 +106,19 @@ public class App {
                     System.out.println("Welcome " + p.getName() + "!");
 
                     //RUNS EVERY LEVEL RESET
-                    while (true) {
+                    level: while (true) {
                         int spaceFactor;
                         switch (level) {
                             case 1:
                             case 2:
                             case 3:
                                 spaceFactor = 5;
+                                break;
                             case 4:
                             case 5:
                             case 6:
                                 spaceFactor = 4;
+                                break;
                             default:
                                 spaceFactor = 3;
                         }
@@ -124,8 +126,8 @@ public class App {
                         char[][] screen = mg.map; //assigns to "screen" for local reference
 
                         //SETS PLAYER POSITION
-                        p.setX(screen.length / 2);
-                        p.setY(3);
+                        p.setX(mg.getXStart());
+                        p.setY(mg.getYStart());
                         AsciiText.printLevel(++level); //Prints "Level #" in ascii art after increasing level by 1
                         System.out.println();
 
@@ -152,8 +154,8 @@ public class App {
                         //ADDING ENEMIES TO LEVEL
                         Enemies enemies = new Enemies();
                         for (int i = level; i > 0; i--) {
-                            int xPs = (int)(Math.random() * 12 * 3) + 2; //x-position
-                            int yPs = (int)(Math.random() * 6 * 3) + 2; //y-position
+                            int xPs = (int)(Math.random()*(mg.map[0].length-1)) + 1; //x-position
+                            int yPs = (int)(Math.random()*(mg.map.length-1)) + 1; //y-position
                             int type = (int)(Math.random() * 3) + 1; //randomizes enemy type
 
                             Enemy enemy;
@@ -192,7 +194,37 @@ public class App {
                             scanner = new Scanner(System.in);
                             input = scanner.nextLine();
 
-                            boolean enemyIsNearPlayer;
+                            if(p.getName().equals("DEBUGUSER")) {
+                                switch(input) {
+                                    case "SKIP":
+                                    case "SKIPLVL":
+                                    case "SKIPLEVEL":
+                                        continue level;
+                                    case "HEAL":
+                                        p.increaseHealth();
+                                        continue;
+                                    case "INVINCIBLE":
+                                    case "DEATHOFF":
+                                        p.setHealthCap(999);
+                                        p.increaseHealth(999);
+                                        continue;
+                                    case "QUIT":
+                                    case "DIE":
+                                        p.decreaseHealth(999);
+                                        continue;
+                                    case "KILLALL":
+                                        for(int e = 0; e < enemies.enemies.size(); e++)
+                                            enemies.enemies.get(e).takeDamage(999);
+                                        continue;
+                                    case "SWORD":
+                                        //TODO give player a sword
+                                        continue;
+                                    case "BOW":
+                                        //TODO give player a bow
+                                        continue;
+                                }
+                            }
+
                             int deltaX, deltaY;
 
 
@@ -204,28 +236,43 @@ public class App {
                             for (Enemy en: enemies.enemies) {
                                 deltaX = Math.abs(p.xPos - en.xPos);
                                 deltaY = Math.abs(p.yPos - en.yPos);
-                                enemyIsNearPlayer = deltaX <= en.range && deltaY <= en.range;
 
-                                if (enemyIsNearPlayer) {
+                                if (deltaX <= en.range && deltaY <= en.range) {
                                     p.decreaseHealth(en.attack);
                                     System.out.println(en + " delt " + en.attack + " damage to " + p.getName() + "!");
-                                } else if (p.xPos > en.xPos && screen[en.yPos][en.xPos + 1] != mg.getWall() && !enemies.isEnemy(screen, en.xPos + 1, en.yPos)) {
-                                    screen[en.yPos][en.xPos] = mg.getSpace();
-                                    en.move('a');
-                                    screen[en.yPos][en.xPos] = en.character;
-                                } else if (p.xPos < en.xPos && screen[en.yPos][en.xPos - 1] != mg.getWall() && !enemies.isEnemy(screen, en.xPos - 1, en.yPos)) {
-                                    screen[en.yPos][en.xPos] = mg.getSpace();
-                                    en.move('d');
-                                    screen[en.yPos][en.xPos] = en.character;
-                                } else if (p.yPos > en.yPos && screen[en.yPos + 1][en.xPos] != mg.getWall() && !enemies.isEnemy(screen, en.xPos, en.yPos + 1)) {
-                                    screen[en.yPos][en.xPos] = mg.getSpace();
-                                    en.move('w');
-                                    screen[en.yPos][en.xPos] = en.character;
-                                } else if (p.yPos < en.yPos && screen[en.yPos - 1][en.xPos] != mg.getWall() && !enemies.isEnemy(screen, en.xPos, en.yPos - 1)) {
-                                    screen[en.yPos][en.xPos] = mg.getSpace();
-                                    en.move('s');
-                                    screen[en.yPos][en.xPos] = en.character;
+                                    continue;
                                 }
+
+                                boolean[][] pathToPlayer = MazeSolver.solve(en.xPos, en.yPos, p.xPos, p.yPos, mg.getMap());
+
+                                if(!MazeSolver.isSolvable(pathToPlayer)) {
+                                    continue;
+                                }
+
+
+                                screen[en.yPos][en.xPos] = mg.getSpace();
+                                if(pathToPlayer[en.yPos-1][en.xPos]) { //up
+                                    en.move('w');
+                                } else if(pathToPlayer[en.yPos+1][en.xPos]) { //down
+                                    en.move('s');
+                                } else if(pathToPlayer[en.yPos][en.xPos-1]) { //left
+                                    en.move('a');
+                                } else if(pathToPlayer[en.yPos][en.xPos+1]) { //right
+                                    en.move('d');
+                                }
+
+                                /*
+                                if (p.xPos > en.xPos && screen[en.yPos][en.xPos + 1] != mg.getWall() && !enemies.isEnemy(screen, en.xPos + 1, en.yPos)) {
+                                    en.move('a');
+                                } else if (p.xPos < en.xPos && screen[en.yPos][en.xPos - 1] != mg.getWall() && !enemies.isEnemy(screen, en.xPos - 1, en.yPos)) {
+                                    en.move('d');
+                                } else if (p.yPos > en.yPos && screen[en.yPos + 1][en.xPos] != mg.getWall() && !enemies.isEnemy(screen, en.xPos, en.yPos + 1)) {
+                                    en.move('w');
+                                } else if (p.yPos < en.yPos && screen[en.yPos - 1][en.xPos] != mg.getWall() && !enemies.isEnemy(screen, en.xPos, en.yPos - 1)) {
+                                    en.move('s');
+                                } //*/
+
+                                screen[en.yPos][en.xPos] = en.character;
                             }
 
                             screen[p.yPos][p.xPos] = PLAYERCHAR; //updates player's position on the map
@@ -330,7 +377,9 @@ public class App {
                         }
                     }
 
-                    Scorekeeper.addScore(p.getName(), playerXp);
+                    if(!p.getName().equals("DEBUGUSER"))
+                        Scorekeeper.addScore(p.getName(), playerXp);
+
                     Scorekeeper.printScoreboard();
                     AsciiText.printLines(12 - Scorekeeper.getScores().size());
 

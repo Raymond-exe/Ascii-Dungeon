@@ -7,26 +7,32 @@ public class MapGenerator {
     public char[][] map;
     private int[][] walls;
     private boolean[][] mapChecker;
-    //private int[][] navigator;
-    private char wall = '#';
-    private char space = ' ';
-    private char door = '-';
+    private final char WALL = '#';
+    private final char SPACE = ' ';
+    private final char DOOR = '-';
 
-    public char getWall() { return wall; } 
-    public char getSpace() { return space; }
+    private int xStart;
+    private int yStart;
+
+    public char getWall() { return WALL; }
+    public char getSpace() { return SPACE; }
     public char[][] getMap() { return map; }
 
     public MapGenerator(int y, int x, int spaceFactor) {
         map = new char[y][x];
         mapChecker = new boolean[y][x];
         walls = new int[map.length / 3][ map[0].length / 3];
-        fillMap(spaceFactor);
-        for (int y0 = 0; y0 < map.length; y0++) {
-            for (int x0 = 0; x0 < map.length; x0++) {
-                //navigator[y0][x0] = (map[y0][x0] == '#' ? -1 : 0);
-            }
-        }
-        //navigator = PathFinder.findPath(navigator, map[0].length / 2, 3, map[0].length / 2, map.length - 1);
+
+
+        boolean[][] solution;
+
+        do {
+            xStart = (int)(Math.random()*(map[0].length-2))+1;
+            yStart = (int)(Math.random()*3)+1;
+            fillMap(spaceFactor);
+            map[yStart][xStart] = SPACE;
+            solution = MazeSolver.solve(xStart, yStart, map[0].length/2, map.length-1, map);
+        } while(!MazeSolver.isSolvable(solution));
     }
 
     //DEBUGGING ONLY
@@ -51,6 +57,7 @@ public class MapGenerator {
         }
         return output;
     }
+
     private void fillMap(int spaceFactor) {
         boolean isXEdge = false;
         boolean isYEdge = false;
@@ -77,27 +84,36 @@ public class MapGenerator {
             yCoordinate = getRelativeCoordinate(y);
             for (int x = 0; x < walls[y].length; x++) {
                 xCoordinate = getRelativeCoordinate(x);
-                map[yCoordinate][xCoordinate] = space;
+                map[yCoordinate+1][xCoordinate+1] = SPACE;
+                map[yCoordinate+1][xCoordinate  ] = SPACE;
+                map[yCoordinate+1][xCoordinate-1] = SPACE;
+                map[yCoordinate  ][xCoordinate+1] = SPACE;
+                map[yCoordinate  ][xCoordinate  ] = SPACE;
+                map[yCoordinate  ][xCoordinate-1] = SPACE;
+                map[yCoordinate-1][xCoordinate+1] = SPACE;
+                map[yCoordinate-1][xCoordinate  ] = SPACE;
+                map[yCoordinate-1][xCoordinate-1] = SPACE;
+
                 switch (walls[y][x]) {
                     case 1:
-                        map[yCoordinate + 1][xCoordinate - 1] = wall; //LOW-LEFT
-                        map[yCoordinate][xCoordinate - 1] = wall; //LEFT
-                        map[yCoordinate - 1][xCoordinate - 1] = wall; //UP-LEFT          
+                        map[yCoordinate + 1][xCoordinate - 1] = WALL; //LOW-LEFT
+                        map[yCoordinate][xCoordinate - 1] = WALL; //LEFT
+                        map[yCoordinate - 1][xCoordinate - 1] = WALL; //UP-LEFT
                         break;
                     case 2:
-                        map[yCoordinate - 1][xCoordinate + 1] = wall; //UP-RIGHT
-                        map[yCoordinate - 1][xCoordinate - 1] = wall; //UP-LEFT
-                        map[yCoordinate - 1][xCoordinate] = wall; //UP                         
+                        map[yCoordinate - 1][xCoordinate + 1] = WALL; //UP-RIGHT
+                        map[yCoordinate - 1][xCoordinate - 1] = WALL; //UP-LEFT
+                        map[yCoordinate - 1][xCoordinate] = WALL; //UP
                         break;
                     case 3:
-                        map[yCoordinate - 1][xCoordinate + 1] = wall; //UP-RIGHT
-                        map[yCoordinate][xCoordinate + 1] = wall; //RIGHT
-                        map[yCoordinate + 1][xCoordinate + 1] = wall; //LOW-RIGHT
+                        map[yCoordinate - 1][xCoordinate + 1] = WALL; //UP-RIGHT
+                        map[yCoordinate][xCoordinate + 1] = WALL; //RIGHT
+                        map[yCoordinate + 1][xCoordinate + 1] = WALL; //LOW-RIGHT
                         break;
                     case 4:
-                        map[yCoordinate + 1][xCoordinate + 1] = wall; //LOW-RIGHT
-                        map[yCoordinate + 1][xCoordinate] = wall; //LOW
-                        map[yCoordinate + 1][xCoordinate - 1] = wall; //LOW-LEFT
+                        map[yCoordinate + 1][xCoordinate + 1] = WALL; //LOW-RIGHT
+                        map[yCoordinate + 1][xCoordinate] = WALL; //LOW
+                        map[yCoordinate + 1][xCoordinate - 1] = WALL; //LOW-LEFT
                         break;
                     case 5:
                     default:
@@ -112,22 +128,25 @@ public class MapGenerator {
                 isXEdge = x == 0 || x == map[y].length - 1;
                 isYEdge = y == 0 || y == map.length - 1;
                 if (isXEdge || isYEdge) {
-                    map[y][x] = wall;
+                    map[y][x] = WALL;
                     if (x > map[y].length * 2/5 && x < map[y].length * 3/5 && y != 0)
-                        map[y][x] = door;
+                        map[y][x] = DOOR;
                 }
 
             }
         }
+    }
 
+    public boolean isValidPosition(int y, int x) {
+        return (y>=0 && y<map.length && x>=0 && x<map.length);
+    }
 
-        //Filling (navigator) with proper values
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map.length; x++) {
-                if (mapChecker[y][x] != true)
-                    mapChecker[y][x] = false;
-            }
-        }
+    public int getXStart() {
+        return xStart;
+    }
+
+    public int getYStart() {
+        return yStart;
     }
 
     private int getRelativeCoordinate(int num) {

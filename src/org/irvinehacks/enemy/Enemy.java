@@ -80,16 +80,16 @@ public class Enemy
 
     switch(c) {
       case 'w':
-        yPos++;
-        break;
-      case 's':
         yPos--;
         break;
+      case 's':
+        yPos++;
+        break;
       case 'a':
-        xPos++;
+        xPos--;
         break;
       case 'd':
-        xPos--;
+        xPos++;
         break;
     }
   }
